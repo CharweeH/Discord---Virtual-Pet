@@ -28,41 +28,42 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f"{bot.user.name} is ready!")
 
-#Using 'test' instaed of 'hello' so 'hello' isn't reused
+#Using 'test' instead of 'hello' so 'hello' isn't reused (if i use it again)
 
 @bot.command(name='test')
 
 async def hello_world(ctx):
     await ctx.send('Hello, World!')
 
-bot.run(TOKEN)
+#Here for testing
+#bot.run(TOKEN)
 
 DATA_FILE = pet_data.json
 
 PET_EMOJIS = {
-    "dog" = "🐶",
-    "cat" = "🐱",
-    "rabbit" = "🐰",
-    "parrot" = "🦜",
-    "snake" = "🐍",
-    "monkey" = "🐒",
-    "penguin" = "🐧".
-    "panda" = "🐼",
-    "hamster" = "🐹",
-    "raccoon" = "🦝",
-    "cow" = "🐮",
-    "seal" = "🦭",
-    "dinosaur" = "🦖",
-    "unicorn" = "🦄",
-    "default" = "🐾"
+    "dog": "🐶",
+    "cat": "🐱",
+    "rabbit": "🐰",
+    "parrot": "🦜",
+    "snake": "🐍",
+    "monkey": "🐒",
+    "penguin": "🐧",
+    "panda": "🐼",
+    "hamster": "🐹",
+    "raccoon": "🦝",
+    "cow": "🐮",
+    "seal": "🦭",
+    "dinosaur": "🦖",
+    "unicorn": "🦄",
+    "default": "🐾"
 }
 
-#Storing user's pet data
+#storing user's pet data (check later to see if this works)
 
 def load_pet_data():
-    if os.path.exists(DATA_FILE)
+    if os.path.exists(DATA_FILE):
       with open(DATA_FILE, "r") as f:
-          return.json(f)
+          return json(f)
     
     else:
         return {}
@@ -74,8 +75,29 @@ def save_pet_data(data):
 def get_pet_emoji(pet_type):
     return PET_EMOJIS.get(pet_type.lower(), PET_EMOJIS["default"])
 
+pet_data = load_pet_data
 
+def get_pet(user_id):
+    return pet_data.get(str(user_id))
 
+#Adopting the pet
+
+@bot.command()
+async def adopt(ctx):
+    uid = str(ctx.author.id)
+    if uid in pet_data:
+        await ctx.send("You already have a pet! Use `!pet` to interact with it.")
+        return
+    
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+#maybe add random name generator or something similar if user can't decide name
+
+    await ctx.send("What would you like to name your pet?")
+    try:
+        name_msg = await bot.wait_for("message", check=check, timeout=60.0)
+        pet_name = name.msg.content.strip()
 
 
 
